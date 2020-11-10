@@ -29,6 +29,66 @@ setInterval(() => {
 }, 2000);
 ```
 
+2. Get diff between currentCommit and latest upstreamCommit
+
+Feasible, by extending the vscode git API
+
+```ts
+const gitExtension = vscode.extensions.getExtension<GitExtension>(
+    "vscode.git"
+  )?.exports;
+const api = gitExtension?.getAPI(1);
+const repo = api?.repositories[0]
+const head1 = repo?.state.HEAD
+const currentCommit = head1?.commit;
+
+await repo?.fetch(
+  head1?.upstream?.remote, 
+  head1?.upstream?.name
+);
+
+const head2 = repo?.state.HEAD
+
+if (head2?.behind || 0 > 0) {
+  await repo?.pull();
+
+  const head3 = repo?.state.HEAD
+  const upstreamCommit = head3?.commit;
+
+  if (!(currentCommit || upstreamCommit) || currentCommit === upstreamCommit) {
+    return;
+  }
+
+  const changes = await repo?.diffBetween(
+    currentCommit as string, upstreamCommit as string);
+}
+```
+
+This shows the diff output as follows:
+
+```json
+[
+  {
+    status: 5,
+    originalUri: {
+      $mid: 1,
+      path: "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
+      scheme: ""
+    },
+    uri: {
+      $mid: 1,
+      path: "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
+      scheme: ""
+    },
+    renameUri: {
+      $mid: 1,
+      path: "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
+      scheme: "file"
+    }
+  }
+]
+```
+
 ## Developing in VS Code Notes:
 
 ```
