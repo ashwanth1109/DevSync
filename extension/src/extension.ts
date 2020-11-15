@@ -49,9 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
       );
 
       // If not the same author as in the configuration don't do anything
-      if (configuration.email !== authorEmail) {
-        return;
-      }
+      if (configuration.email !== authorEmail) return;
 
       // TODO: Change this interval later
     }, configuration.interval * 1000);
