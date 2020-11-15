@@ -107,7 +107,7 @@ terminal.sendText("npm run test");
 
 ### Milestone 1: Pull and get the two commits to be compared
 
-````ts
+```ts
 const currentCommitHash = await exec("git rev-parse HEAD");
 const gitStatus = await exec("git remote update && git status -uno");
 
@@ -227,4 +227,4 @@ Commands will not be run multiple times
     "npm run frontend:test"
   ]
 }
-````
+```
