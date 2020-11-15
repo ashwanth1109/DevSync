@@ -90,7 +90,7 @@ Example logic object:
 }
 ```
 
-![Workspace Settings](./extension/assets/workspace-settings)
+![Workspace Settings](./extension/assets/workspace-settings.png)
 
 ## Dev Guide:
 
