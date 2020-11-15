@@ -76,24 +76,44 @@ export function activate(context: vscode.ExtensionContext) {
     // The commands to run in order
     const commandsToRun: string[] = [];
 
+    const parseCommands = (entry: any) => {
+      const commands = (entry[1] as unknown) as any[];
+      for (const command of commands) {
+        if (typeof command === "string" && !commandsToRun.includes(command)) {
+          commandsToRun.push(command);
+        }
+      }
+    };
+
     Object.entries(configuration.logic).forEach((entry) => {
       // Simple file match
       if (!/\*/.test(entry[0])) {
         // No *, so it is a simple file
         const filePath = entry[0];
 
-        if (diffArr.includes(filePath)) {
-          const commands = (entry[1] as unknown) as any[];
+        // If one of the file path matches with diff array, parse and store commands
+        if (diffArr.includes(filePath)) parseCommands(entry);
+      } else if (entry[0].includes("**/*")) {
+        // Match file in any sub folder with specific extension
+        // ^frontend\/(?:.*).spec\.js$
+        const pattern = new RegExp(
+          `^${entry[0]
+            .replace("/", "\\/")
+            .replace(".", ".")
+            .replace("**/*", "(?:.*)")}`
+        );
 
-          for (const command of commands) {
-            if (
-              typeof command === "string" &&
-              !commandsToRun.includes(command)
-            ) {
-              commandsToRun.push(command);
-            }
-          }
-        }
+        // If one of the file path matches with diff array, parse and store commands
+        if (diffArr.some((file) => pattern.test(file))) parseCommands(entry);
+      } else {
+        // Match any file inside directory
+        // ^deploy\/.*$
+        const pattern = new RegExp(
+          `^${entry[0].replace("/", "\\/").replace("*", ".*$")}`
+        );
+
+        // If one of the file path matches with diff array, parse and store commands
+        if (diffArr.some((file) => pattern.test(file))) parseCommands(entry);
       }
     });
 
