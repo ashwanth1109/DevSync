@@ -70,14 +70,14 @@ Example logic object:
     "npm run deploy:backend",
     "npm run data:seed"
   ],
-  "sql/*": [
+  "backend/database/schema.sql": [
     { "skipIfCommand": ["npm run destroy:backend", "npm run deploy:backend"] },
     "npm run database:drop",
     "npm run database:create",
     "npm run data:seed"
   ],
   "lambda/*": ["npm run deploy:backend"],
-  "frontend/assets": ["npm run deploy:assets"],
+  "frontend/assets/*": ["npm run deploy:assets"],
   "frontend/*": ["npm run frontend:start"],
   "backend/**/*.spec.js": [
     { "separateTab": true, "parallel": true },
@@ -98,6 +98,31 @@ Example logic object:
 setInterval(async () => {
   // Poll to see if commits have been pushed to the repo
 }, configuration.interval * 1000);
+```
+
+### Milestone 4: Store commands to run (for simple file matches)
+
+```ts
+// The commands to run in order
+const commandsToRun: string[] = [];
+
+Object.entries(configuration.logic).forEach((entry) => {
+  // Simple file match
+  if (!/\*/.test(entry[0])) {
+    // No *, so it is a simple file
+    const filePath = entry[0];
+
+    if (diffArr.includes(filePath)) {
+      const commands = (entry[1] as unknown) as any[];
+
+      for (const command of commands) {
+        if (typeof command === "string" && !commandsToRun.includes(command)) {
+          commandsToRun.push(command);
+        }
+      }
+    }
+  }
+});
 ```
 
 ## Dev Guide:
