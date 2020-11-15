@@ -12,7 +12,7 @@ This is where DevSync comes into the picture.
 
 ## DevSync - How it works?
 
-![DevSync - How it works?](./assets/how-it-works.png)
+![DevSync - How it works?](./extension/assets/how-it-works.png)
 
 ## Milestone Map:
 
@@ -121,6 +121,7 @@ const authorEmail = await exec(
 );
 ```
 
+### Milestone 2:
 
 ## Dev Guide:
 
