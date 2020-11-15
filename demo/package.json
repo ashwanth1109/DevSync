@@ -2,6 +2,9 @@
   "name": "devsync",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "vscode": "^1.51.0"
+  },
   "scripts": {
     "lambda:install": "echo \"Lambda install will be run\" && exit 1",
     "deploy:install": "echo \"Deploy install will be run\" && exit 1",

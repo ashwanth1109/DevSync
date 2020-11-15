@@ -32,7 +32,65 @@ const authorEmail = await exec(
 );
 ```
 
-### Milestone 2:
+### Milestone 2: Get configuration from user settings
+
+```ts
+"configuration": {
+  "title": "Devsync",
+  "properties": {
+    "devsync.email": {
+      "type": "string",
+      "default": null,
+      "description": "Emails that are allowed to make auto deploy commits"
+    },
+    "devsync.logic": {
+      "type": "object",
+      "default": {},
+      "description": "Configuration logic that devsync must follow when handling your commits"
+    },
+    "devsync.interval": {
+      "type": "integer",
+      "default": 10,
+      "description": "Interval at which devsync should poll for changes"
+    }
+  }
+}
+```
+
+Example logic object:
+
+```json
+{
+  "deploy/package.json": ["npm run deploy:install"],
+  "lambda/package.json": ["npm run lambda:install"],
+  "frontend/package.json": ["npm run frontend:install"],
+  "graphql/*": ["npm run graphql:codegen"],
+  "deploy/*": [
+    { "manualOverride": ["npm run destroy:backend"] },
+    "npm run deploy:backend",
+    "npm run data:seed"
+  ],
+  "sql/*": [
+    { "skipIfCommand": ["npm run destroy:backend", "npm run deploy:backend"] },
+    "npm run database:drop",
+    "npm run database:create",
+    "npm run data:seed"
+  ],
+  "lambda/*": ["npm run deploy:backend"],
+  "frontend/assets": ["npm run deploy:assets"],
+  "frontend/*": ["npm run frontend:start"],
+  "backend/**/*.spec.js": [
+    { "separateTab": true, "parallel": true },
+    "npm run backend:test"
+  ],
+  "frontend/**/*.spec.js": [
+    { "separateTab": true, "parallel": true },
+    "npm run frontend:test"
+  ]
+}
+```
+
+![Workspace Settings](./extension/assets/workspace-settings)
 
 ## Dev Guide:
 
@@ -108,34 +166,3 @@ Each file can be matched only once
 Maintain order
 Identify if there's anyway to detect if destroy has to be run
 Commands will not be run multiple times
-
-```json
-{
-  "deploy/package.json": ["npm run deploy:install"],
-  "lambda/package.json": ["npm run lambda:install"],
-  "frontend/package.json": ["npm run frontend:install"],
-  "graphql/*": ["npm run graphql:codegen"],
-  "deploy/*": [
-    { "manualOverride": ["npm run destroy:backend"] },
-    "npm run deploy:backend",
-    "npm run data:seed"
-  ],
-  "sql/*": [
-    { "skipIfCommand": ["npm run destroy:backend", "npm run deploy:backend"] },
-    "npm run database:drop",
-    "npm run database:create",
-    "npm run data:seed"
-  ],
-  "lambda/*": ["npm run deploy:backend"],
-  "frontend/assets": ["npm run deploy:assets"],
-  "frontend/*": ["npm run frontend:start"],
-  "backend/**/*.spec.js": [
-    { "separateTab": true, "parallel": true },
-    "npm run backend:test"
-  ],
-  "frontend/**/*.spec.js": [
-    { "separateTab": true, "parallel": true },
-    "npm run frontend:test"
-  ]
-}
-```
