@@ -34,25 +34,21 @@ setInterval(() => {
 Feasible, by extending the vscode git API
 
 ```ts
-const gitExtension = vscode.extensions.getExtension<GitExtension>(
-    "vscode.git"
-  )?.exports;
+const gitExtension = vscode.extensions.getExtension<GitExtension>("vscode.git")
+  ?.exports;
 const api = gitExtension?.getAPI(1);
-const repo = api?.repositories[0]
-const head1 = repo?.state.HEAD
+const repo = api?.repositories[0];
+const head1 = repo?.state.HEAD;
 const currentCommit = head1?.commit;
 
-await repo?.fetch(
-  head1?.upstream?.remote, 
-  head1?.upstream?.name
-);
+await repo?.fetch(head1?.upstream?.remote, head1?.upstream?.name);
 
-const head2 = repo?.state.HEAD
+const head2 = repo?.state.HEAD;
 
 if (head2?.behind || 0 > 0) {
   await repo?.pull();
 
-  const head3 = repo?.state.HEAD
+  const head3 = repo?.state.HEAD;
   const upstreamCommit = head3?.commit;
 
   if (!(currentCommit || upstreamCommit) || currentCommit === upstreamCommit) {
@@ -60,7 +56,9 @@ if (head2?.behind || 0 > 0) {
   }
 
   const changes = await repo?.diffBetween(
-    currentCommit as string, upstreamCommit as string);
+    currentCommit as string,
+    upstreamCommit as string
+  );
 }
 ```
 
@@ -69,21 +67,21 @@ This shows the diff output as follows:
 ```json
 [
   {
-    status: 5,
-    originalUri: {
-      $mid: 1,
-      path: "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
-      scheme: ""
+    "status": 5,
+    "originalUri": {
+      "$mid": 1,
+      "path": "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
+      "scheme": ""
     },
-    uri: {
-      $mid: 1,
-      path: "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
-      scheme: ""
+    "uri": {
+      "$mid": 1,
+      "path": "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
+      "scheme": ""
     },
-    renameUri: {
-      $mid: 1,
-      path: "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
-      scheme: "file"
+    "renameUri": {
+      "$mid": 1,
+      "path": "/c:/Users/ashwa/Desktop/Crossover/5k-voltdelta/README.md",
+      "scheme": "file"
     }
   }
 ]
@@ -102,9 +100,8 @@ const terminal = vscode.window.createTerminal({
 
 terminal.show();
 
-terminal.sendText('npm run test');
+terminal.sendText("npm run test");
 ```
-
 
 ## Dev Guide:
 
@@ -114,6 +111,7 @@ terminal.sendText('npm run test');
 To package extension: `vsce package`
 
 Need a solution to have the extension, auto installed. Probably can do this,
+
 1. Upload extension to s3 bucket
 2. In devspace docker setup / init, copy the file from bucket
 3. Run `code --install-extension devsync-0.0.1.vsix`
@@ -140,12 +138,17 @@ Need a solution to have the extension, auto installed. Probably can do this,
 
 ## Brainstorming
 
+Auto download from S3 bucket and setup extension
+
 Deploy:
-  - package.json
-  - 
-Backend:
-  - lambdas
-  - graphql
-  - sq
-Frontend:
-  - assets
+
+- package.json
+- Backend:
+- lambdas
+- graphql
+- sq
+  Frontend:
+- assets
+
+`deploy/*` =>
+`*.spec.ts` =>
