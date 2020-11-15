@@ -105,6 +105,23 @@ terminal.show();
 terminal.sendText("npm run test");
 ```
 
+### Milestone 1: Pull and get the two commits to be compared
+
+````ts
+const currentCommitHash = await exec("git rev-parse HEAD");
+const gitStatus = await exec("git remote update && git status -uno");
+
+// If your branch is already on the latest, then do nothing
+if (!/Your branch is behind/.test(gitStatus)) return;
+
+await exec("git pull");
+const latestCommitHash = await exec("git rev-parse HEAD");
+const authorEmail = await exec(
+  `git show -s --format='%ae' ${latestCommitHash}`
+);
+```
+
+
 ## Dev Guide:
 
 1. Run extension in VS Code by pushing `F5`
@@ -120,17 +137,21 @@ Need a solution to have the extension, auto installed. Probably can do this,
 
 ## Notes:
 
-```
+````
+
 "activationEvents": [
-    "onStartupFinished"
+"onStartupFinished"
 ]
+
 ```
 
 ```
+
 "extensionDependencies": [
-		"vscode.git"
-	],
-```
+"vscode.git"
+],
+
+````
 
 [Expose config to be set in user settings](https://code.visualstudio.com/api/references/contribution-points#contributes.configuration)
 
@@ -205,4 +226,4 @@ Commands will not be run multiple times
     "npm run frontend:test"
   ]
 }
-```
+````

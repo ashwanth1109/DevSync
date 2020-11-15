@@ -32,6 +32,11 @@
 					"type": "string",
 					"default": null,
 					"description": "Emails that are allowed to make auto deploy commits"
+				},
+				"devsync.logic": {
+					"type": "object",
+					"default": {},
+					"description": "Configuration logic that devsync must follow when handling your commits"
 				}
 			}
 		}
