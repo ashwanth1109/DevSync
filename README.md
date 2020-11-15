@@ -14,7 +14,9 @@ This is where DevSync comes into the picture.
 
 ![DevSync - How it works?](./assets/how-it-works.png)
 
-## Feasibility Study:
+## Milestone Map:
+
+### Milestone 0: Feasibility Study:
 
 1. Set an interval to trigger the run of a specific function at these intervals
 
@@ -136,6 +138,22 @@ Need a solution to have the extension, auto installed. Probably can do this,
 
 [VS CodeSpaces](https://github.com/MicrosoftDocs/vscodespaces)
 
+- Shared user, multiple people -> push their commits on the same branch
+- Store what was deployed earlier somewhere
+- START ==> SEND MESSAGE
+- END ==> SEND MESSAGE WITH COMMIT HASH
+- Interactive prompt in case of manual override requirement
+- `Better safe than sorry` principle
+- Anecdote about my pattern of usage
+- Auto deploy makes it easier on a newbee
+- How to auto run extension on launch?
+- Offloading the thought process (SCRATCH.md) => Monkey coding
+- Configurable tooling, not smart
+- Auto create branch from github? Or CLI tool to run create
+- Auto capture and write command outputs somewhere
+- Can we get main terminal and close processes or switch terminal etc.?
+- Update feasibility study failure point
+
 ## Brainstorming
 
 Auto download from S3 bucket and setup extension
@@ -152,3 +170,39 @@ Deploy:
 
 `deploy/*` =>
 `*.spec.ts` =>
+
+Each file can be matched only once
+Maintain order
+Identify if there's anyway to detect if destroy has to be run
+Commands will not be run multiple times
+
+```json
+{
+  "deploy/package.json": ["npm run deploy:install"],
+  "lambda/package.json": ["npm run lambda:install"],
+  "frontend/package.json": ["npm run frontend:install"],
+  "graphql/*": ["npm run graphql:codegen"],
+  "deploy/*": [
+    { "manualOverride": ["npm run destroy:backend"] },
+    "npm run deploy:backend",
+    "npm run data:seed"
+  ],
+  "sql/*": [
+    { "skipIfCommand": ["npm run destroy:backend", "npm run deploy:backend"] },
+    "npm run database:drop",
+    "npm run database:create",
+    "npm run data:seed"
+  ],
+  "lambda/*": ["npm run deploy:backend"],
+  "frontend/assets": ["npm run deploy:assets"],
+  "frontend/*": ["npm run frontend:start"],
+  "backend/**/*.spec.js": [
+    { "separateTab": true, "parallel": true },
+    "npm run backend:test"
+  ],
+  "frontend/**/*.spec.js": [
+    { "separateTab": true, "parallel": true },
+    "npm run frontend:test"
+  ]
+}
+```
