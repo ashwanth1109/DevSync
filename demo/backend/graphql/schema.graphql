@@ -1,4 +1,0 @@
-type Customer @model {
-  id: Int! @id @noCreate
-  name: String
-}
