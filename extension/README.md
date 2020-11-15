@@ -137,15 +137,3 @@ Need a solution to have the extension, auto installed. Probably can do this,
 [Packaging extension into VSIX](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#packaging-extensions)
 
 [VS CodeSpaces](https://github.com/MicrosoftDocs/vscodespaces)
-
-## Brainstorming
-
-Deploy:
-  - package.json
-  - 
-Backend:
-  - lambdas
-  - graphql
-  - sq
-Frontend:
-  - assets
