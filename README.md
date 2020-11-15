@@ -92,6 +92,14 @@ Example logic object:
 
 ![Workspace Settings](./extension/assets/workspace-settings.png)
 
+### Milestone 3: Run extension checks in interval
+
+```ts
+setInterval(async () => {
+  // Poll to see if commits have been pushed to the repo
+}, configuration.interval * 1000);
+```
+
 ## Dev Guide:
 
 1. Run extension in VS Code by pushing `F5`

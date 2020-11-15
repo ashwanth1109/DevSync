@@ -28,22 +28,33 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand("devsync.run", async () => {
-    // const currentCommitHash = await exec("git rev-parse HEAD");
-    // const gitStatus = await exec("git remote update && git status -uno");
-    //
-    // // If your branch is already on the latest, then do nothing
-    // if (!/Your branch is behind/.test(gitStatus)) return;
-    //
-    // await exec("git pull");
-    // const latestCommitHash = await exec("git rev-parse HEAD");
-    //
-    // // We want the author email so that only specific author can trigger auto deploy
-    // const authorEmail = await exec(
-    //   `git show -s --format='%ae' ${latestCommitHash}`
-    // );
-
     const configuration = vscode.workspace.getConfiguration("devsync");
     console.log("CONFIGURATION", configuration);
+
+    setInterval(async () => {
+      vscode.window.showInformationMessage("Running in interval");
+
+      const currentCommitHash = await exec("git rev-parse HEAD");
+      const gitStatus = await exec("git remote update && git status -uno");
+
+      // If your branch is already on the latest, then do nothing
+      if (!/Your branch is behind/.test(gitStatus)) return;
+
+      await exec("git pull");
+      const latestCommitHash = await exec("git rev-parse HEAD");
+
+      // We want the author email so that only specific author's commits can trigger auto deploy
+      const authorEmail = await exec(
+        `git show -s --format='%ae' ${latestCommitHash}`
+      );
+
+      // If not the same author as in the configuration don't do anything
+      if (configuration.email !== authorEmail) {
+        return;
+      }
+
+      // TODO: Change this interval later
+    }, configuration.interval * 1000);
   });
 
   context.subscriptions.push(disposable);
