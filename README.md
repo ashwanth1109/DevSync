@@ -20,7 +20,7 @@ This is where DevSync comes into the picture.
 
 Feasible, we can use setInterval like in the web
 
-```
+```ts
 // TODO: Set Interval example
 let count = 0;
 setInterval(() => {
@@ -89,7 +89,24 @@ This shows the diff output as follows:
 ]
 ```
 
-## Developing in VS Code Notes:
+3. Run terminal commands from extension
+
+Not feasible using child_process exec or any other Node API.
+Feasible if you create a new terminal and use the sendText() API.
+
+```ts
+const terminal = vscode.window.createTerminal({
+  name: "My Command",
+  cwd: `${vscode.workspace.rootPath}/deploy`,
+});
+
+terminal.show();
+
+terminal.sendText('npm run test');
+```
+
+
+## Notes:
 
 ```
 "activationEvents": [
@@ -100,3 +117,5 @@ This shows the diff output as follows:
 [Expose config to be set in user settings](https://code.visualstudio.com/api/references/contribution-points#contributes.configuration)
 
 [Packaging extension into VSIX](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#packaging-extensions)
+
+[VS CodeSpaces](https://github.com/MicrosoftDocs/vscodespaces)
