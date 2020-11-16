@@ -297,5 +297,5 @@ Need a solution to have the extension, auto installed. Probably can do this,
 ## Brainstorming
 
 Each file can be matched only once
-Maintain order
+Maintain order (preservation of order)
 Commands will not be run multiple times
