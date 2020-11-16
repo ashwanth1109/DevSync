@@ -14,15 +14,20 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:devsync.run"
+    "onCommand:devsync.start",
+    "onCommand:devsync.stop"
   ],
   "extensionDependencies": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "devsync.run",
-        "title": "DevSync"
+        "command": "devsync.start",
+        "title": "Start DevSync"
+      },
+      {
+        "command": "devsync.stop",
+        "title": "Stop DevSync"
       }
     ],
     "configuration": {

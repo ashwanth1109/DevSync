@@ -42,22 +42,26 @@ function sendMessageToTerminal(command: string) {
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   let runningPrevious = false;
+  let interval: NodeJS.Timeout | null = null;
+  const channel = window.createOutputChannel("DevSync");
+
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-  let disposable = commands.registerCommand("devsync.run", async () => {
-    const channel = window.createOutputChannel("DevSync");
+  let startDisposable = commands.registerCommand("devsync.start", async () => {
     channel.show();
 
     const configuration = workspace.getConfiguration("devsync");
     // channel.appendLine("Using logic object:");
     // channel.append(JSON.stringify(configuration, null, 2));
 
-    setInterval(async () => {
+    interval = setInterval(async () => {
       if (runningPrevious) {
         // if previous poll is still running, we can skip the poll for this interval
         return;
       }
+
+      channel.appendLine("DevSync is polling to remote for changes");
 
       // Set to true once we start running to skip next ones to run parallely
       runningPrevious = true;
@@ -236,7 +240,14 @@ export function activate(context: vscode.ExtensionContext) {
     }, configuration.interval * 1000);
   });
 
-  context.subscriptions.push(disposable);
+  let stopDisposable = commands.registerCommand("devsync.stop", async () => {
+    if (interval) {
+      channel.appendLine("DevSync has stopped polling for changes");
+      clearInterval(interval);
+    }
+  });
+
+  context.subscriptions.push(startDisposable, stopDisposable);
 }
 
 // this method is called when your extension is deactivated

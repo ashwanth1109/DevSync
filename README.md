@@ -235,6 +235,30 @@ switch (key) {
 }
 ```
 
+### Milestone 8: Commands to start and stop DevSync
+
+```json
+"commands": [
+  {
+    "command": "devsync.start",
+    "title": "Start DevSync"
+  },
+  {
+    "command": "devsync.stop",
+    "title": "Stop DevSync"
+  }
+]
+```
+
+```ts
+let stopDisposable = commands.registerCommand("devsync.stop", async () => {
+  if (interval) {
+    channel.appendLine("DevSync has stopped polling for changes");
+    clearInterval(interval);
+  }
+});
+```
+
 ## Dev Guide:
 
 1. Run extension in VS Code by pushing `F5`
