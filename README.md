@@ -99,11 +99,6 @@ Example logic object:
     {
       "parallel": ["npm run frontend:start"]
     }
-  ],
-  "backend/**/*.spec.ts": [
-    {
-      "parallel": ["npm run backend:test"]
-    }
   ]
 }
 ```
