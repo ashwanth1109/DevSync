@@ -27,6 +27,17 @@ async function exec(cmd: string, channel: vscode.OutputChannel | null = null) {
   }
 }
 
+function sendMessageToTerminal(command: string) {
+  const terminal = vscode.window.createTerminal({
+    name: command,
+    cwd: vscode.workspace.rootPath,
+  });
+
+  terminal.show();
+
+  terminal.sendText(command);
+}
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -209,6 +220,9 @@ export function activate(context: vscode.ExtensionContext) {
 
               break;
             case "parallel":
+              for (const subCommand of command.parallel || []) {
+                sendMessageToTerminal(subCommand);
+              }
               break;
             default:
               break;

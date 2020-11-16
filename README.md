@@ -175,7 +175,7 @@ Object.entries(configuration.logic).forEach((entry) => {
 log(commandsToRun);
 ```
 
-### Milestone 6: Implement manualOverride and skipIf flag logic
+### Milestone 6: Implement manualOverride and skipIf flag logic & Milestone 7: Implement parallel flag logic
 
 ```ts
 /**
@@ -226,6 +226,9 @@ switch (key) {
 
     break;
   case "parallel":
+    for (const subCommand of command.parallel || []) {
+      sendMessageToTerminal(subCommand);
+    }
     break;
   default:
     break;
