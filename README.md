@@ -84,9 +84,9 @@ Example logic object:
   ],
   "lambda/*": ["npm run deploy:backend"],
   "frontend/assets/*": ["npm run deploy:assets"],
-  "frontend/*": ["npm run frontend:start"],
-  "backend/**/*.spec.js": [{ "parallel": true }, "npm run backend:test"],
-  "frontend/**/*.spec.js": [{ "parallel": true }, "npm run frontend:test"]
+  "frontend/*": [{ "parallel": ["npm run frontend:start"] }],
+  "backend/**/*.spec.js": [{ "parallel": ["npm run backend:test"] }],
+  "frontend/**/*.spec.js": [{ "parallel": ["npm run frontend:test"] }]
 }
 ```
 
