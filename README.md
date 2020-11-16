@@ -12,7 +12,7 @@ This is where DevSync comes into the picture.
 
 ## DevSync - How it works?
 
-![DevSync - How it works?](./extension/assets/how-it-works.png)
+![DevSync - How it works?](./assets/how-it-works.png)
 
 ## Milestone Map:
 
@@ -90,7 +90,7 @@ Example logic object:
 }
 ```
 
-![Workspace Settings](./extension/assets/workspace-settings.png)
+![Workspace Settings](./assets/workspace-settings.png)
 
 ### Milestone 3: Run extension checks in interval
 
