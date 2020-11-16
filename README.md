@@ -71,22 +71,22 @@ Example logic object:
     "npm run data:seed"
   ],
   "backend/database/schema.sql": [
-    { "skipIfCommand": ["npm run destroy:backend", "npm run deploy:backend"] },
-    "npm run database:drop",
-    "npm run database:create",
-    "npm run data:seed"
+    {
+      "skipIf": {
+        "testFor": ["npm run destroy:backend", "npm run deploy:backend"],
+        "commands": [
+          "npm run database:drop",
+          "npm run database:create",
+          "npm run data:seed"
+        ]
+      }
+    }
   ],
   "lambda/*": ["npm run deploy:backend"],
   "frontend/assets/*": ["npm run deploy:assets"],
   "frontend/*": ["npm run frontend:start"],
-  "backend/**/*.spec.js": [
-    { "separateTab": true, "parallel": true },
-    "npm run backend:test"
-  ],
-  "frontend/**/*.spec.js": [
-    { "separateTab": true, "parallel": true },
-    "npm run frontend:test"
-  ]
+  "backend/**/*.spec.js": [{ "parallel": true }, "npm run backend:test"],
+  "frontend/**/*.spec.js": [{ "parallel": true }, "npm run frontend:test"]
 }
 ```
 
@@ -173,6 +173,63 @@ Object.entries(configuration.logic).forEach((entry) => {
 });
 
 log(commandsToRun);
+```
+
+### Milestone 6: Implement manualOverride and skipIf flag logic
+
+```ts
+/**
+ * We will check for the special flag being passed
+ * Currently, we have support for the following flags:
+ * - manualOverride: Prompt user for confirmation before running
+ * - skipIf: {testFor: [], commands: []}: Skip the next set of commands
+ * - separateTab: Run command in separate tab (for example, if you previously ran start,
+ *   you dont want to run test in the same tab since they both dont terminate on completion)
+ */
+const key = Object.keys(command)[0];
+
+switch (key) {
+  case "manualOverride":
+    for (const subCommand of command.manualOverride) {
+      const response = await window.showInformationMessage(
+        `Do you want to run '${subCommand}' ?`,
+        { modal: true },
+        "Yes",
+        "No"
+      );
+
+      if (response === "Yes") {
+        window.showInformationMessage(`Running command: ${subCommand}`);
+        await exec(subCommand, channel);
+        commandsThatHaveBeenRun.push(subCommand);
+      }
+    }
+    break;
+  case "skipIf":
+    const { testFor, commands: skipCommands } = command.skipIf;
+
+    // If one of the testFor commands have been run previously,
+    // then we skip all commands in this step
+    const testForCheck = testFor.some((subCommand: any) =>
+      commandsThatHaveBeenRun.includes(subCommand)
+    );
+
+    if (testForCheck) {
+      break;
+    }
+
+    for (const subCommand of skipCommands) {
+      window.showInformationMessage(`Running command: ${subCommand}`);
+      await exec(subCommand, channel);
+      commandsThatHaveBeenRun.push(subCommand);
+    }
+
+    break;
+  case "parallel":
+    break;
+  default:
+    break;
+}
 ```
 
 ## Dev Guide:
