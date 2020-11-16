@@ -10,6 +10,10 @@ Furthermore, the native performance of a local IDE is probably going to be bette
 
 This is where DevSync comes into the picture.
 
+## Test Repo
+
+https://github.com/trilogy-group/devsync-test
+
 ## DevSync - How it works?
 
 ![DevSync - How it works?](./assets/how-it-works.png)
@@ -263,11 +267,8 @@ let stopDisposable = commands.registerCommand("devsync.stop", async () => {
 
 We store the matched file from diff in a `matchedFile` array. This way, we dont run different commands for the same matched file.
 
-An example of this is, say we have match patterns for `deploy/package.json` and `deploy/*`.
-We make changes to `deploy/package.json` (example, bump a package version), in such a case,
-we don't want really want to deploy because we bumped package version as a chore and we haven't made changes to any other file in the deploy folder.
-
-So, in this case, only `deploy:install` would be run instead of running the whole deploy sequence.
+An example of this is, say we have match patterns for `frontend/**/*.spec.ts` (npm run test) and `frontend/*` (npm run start).
+We make changes to `frontend/app/app.component.spec.ts`, in such a case, we don't want really want to run start because we on made changes to spec file, and we just want to run tests to check if they are passing.
 
 ## Dev Guide:
 
@@ -275,29 +276,3 @@ So, in this case, only `deploy:install` would be run instead of running the whol
 2. Open command palette (Ctrl + Shift + P) and run the command "DevSync"
 
 To package extension: `vsce package`
-
-Need a solution to have the extension, auto installed. Probably can do this,
-
-1. Upload extension to s3 bucket
-2. In devspace docker setup / init, copy the file from bucket
-3. Run `code --install-extension devsync-0.0.1.vsix`
-
-## Notes:
-
-- Interactive prompt in case of manual override requirement
-- `Better safe than sorry` principle
-- Anecdote about my pattern of usage
-- Auto deploy makes it easier on a newbee
-- Offloading the thought process (SCRATCH.md) => Monkey coding
-- Configurable tooling, not smart
-- Auto create branch from github? Or CLI tool to run create
-- Auto capture and write command outputs somewhere
-- Update feasibility study failure point
-- Start developing feature, while changes are deployed and run on DevSpaces
-- If some issue, then fix it on the cloud IDE itself, without having to stash changes anywhere
-
-## Brainstorming
-
-Each file can be matched only once
-Maintain order (preservation of order)
-Commands will not be run multiple times

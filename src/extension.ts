@@ -51,6 +51,8 @@ export function activate(context: vscode.ExtensionContext) {
   let startDisposable = commands.registerCommand("devsync.start", async () => {
     channel.show();
 
+    channel.appendLine("DevSync has started polling remote for changes");
+
     const configuration = workspace.getConfiguration("devsync");
     // channel.appendLine("Using logic object:");
     // channel.append(JSON.stringify(configuration, null, 2));
@@ -60,8 +62,6 @@ export function activate(context: vscode.ExtensionContext) {
         // if previous poll is still running, we can skip the poll for this interval
         return;
       }
-
-      channel.appendLine("DevSync is polling to remote for changes");
 
       // Set to true once we start running to skip next ones to run parallely
       runningPrevious = true;
@@ -99,8 +99,12 @@ export function activate(context: vscode.ExtensionContext) {
         `git show -s --format='%ae' ${latestCommitHash}`
       );
 
+      channel.appendLine(
+        `Author verification check: ${authorEmail !== configuration.email}`
+      );
+
       // // If not the same author as in the configuration don't do anything
-      if (authorEmail !== `'${configuration.email}'`) {
+      if (authorEmail !== configuration.email) {
         runningPrevious = false;
         return;
       }
@@ -112,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
       // TODO: Remove the map part because this is because our actual code is inside demo folder
       // So that we can house both the extension and our demo test directory in same repo
       const diffArr = diff.trim().split("\n");
-      const matchedFiles: string[] = [];
+      // const matchedFiles: string[] = [];
 
       channel.appendLine(`Files changed: ${JSON.stringify(diffArr, null, 2)}`);
 
@@ -120,7 +124,8 @@ export function activate(context: vscode.ExtensionContext) {
       const commandsToRun: any[] = [];
 
       const parseCommands = (entry: any, matchingFile: string) => {
-        if (matchedFiles.includes(matchingFile)) return;
+        // channel.appendLine(`parseCommand: ${matchingFile}, ${matchedFiles}`);
+        // if (matchedFiles.includes(matchingFile)) return;
 
         const commands = (entry[1] as unknown) as any[];
 
@@ -129,12 +134,13 @@ export function activate(context: vscode.ExtensionContext) {
 
         // Save the matched file to prevent multiple matches from happening for the same file
         // e.g. deploy/package.json will only match once for "deploy/package.json" and not for "deploy/*"
-        matchedFiles.push(matchingFile);
+        const foundFileIndex = diffArr.findIndex((f) => f === matchingFile);
+        if (foundFileIndex !== -1) diffArr.splice(foundFileIndex, 1);
       };
 
       Object.entries(configuration.logic).forEach((entry) => {
         // If file is already matched then dont run any more commands for the same file
-        channel.appendLine(`matchedFiles: ${JSON.stringify(matchedFiles)}`);
+        // channel.appendLine(`matchedFiles: ${JSON.stringify(matchedFiles)}`);
 
         // Simple file match
         if (!/\*/.test(entry[0])) {
@@ -151,7 +157,7 @@ export function activate(context: vscode.ExtensionContext) {
           const pattern = new RegExp(
             `^${entry[0]
               .replace("/", "\\/")
-              .replace(".", ".")
+              // .replace(".", ".")
               .replace("**/*", "(?:.*)")}`
           );
 
@@ -163,7 +169,7 @@ export function activate(context: vscode.ExtensionContext) {
           // Match any file inside directory
           // ^deploy\/.*$
           const pattern = new RegExp(
-            `^${entry[0].replace("/", "\\/").replace("*", ".*$")}`
+            `^${entry[0].replace("/", "\\/").replace("*", ".*")}`
           );
 
           const matchingFile = diffArr.find((file) => pattern.test(file));
@@ -176,7 +182,7 @@ export function activate(context: vscode.ExtensionContext) {
       log(commandsToRun);
 
       channel.append(
-        `Commands to run: ${JSON.stringify(commandsToRun, null, 2)}`
+        `Commands asked to run: ${JSON.stringify(commandsToRun, null, 2)}`
       );
 
       const commandsThatHaveBeenRun: string[] = [];
@@ -220,19 +226,21 @@ export function activate(context: vscode.ExtensionContext) {
               }
               break;
             case "skipIf":
-              const { testFor, commands: skipCommands } = command.skipIf;
+              const { testFor, commands: subCommands } = command.skipIf;
 
-              // If one of the testFor commands have been run previously,
-              // then we skip all commands in this step
-              const testForCheck = testFor.some((subCommand: any) =>
-                commandsThatHaveBeenRun.includes(subCommand)
+              // Remove all commands that have been run previously,
+              const testForCheck = testFor.filter(
+                (subCommand: any) =>
+                  !commandsThatHaveBeenRun.includes(subCommand)
               );
 
-              if (testForCheck) {
+              // If every command in the testForCheck array has already run,
+              // then we skip all subCommands in this step
+              if (testForCheck.length === 0) {
                 break;
               }
 
-              for (const subCommand of skipCommands) {
+              for (const subCommand of subCommands) {
                 window.showInformationMessage(`Running command: ${subCommand}`);
                 await exec(subCommand, channel);
                 commandsThatHaveBeenRun.push(subCommand);

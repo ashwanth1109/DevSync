@@ -71,10 +71,7 @@ This shows the diff output as follows:
 ]
 ```
 
-3. Run terminal commands from extension
-
-Not feasible using child_process exec or any other Node API.
-Feasible if you create a new terminal and use the sendText() API.
+3. Create terminal from extension
 
 ```ts
 const terminal = vscode.window.createTerminal({
@@ -86,3 +83,7 @@ terminal.show();
 
 terminal.sendText("npm run test");
 ```
+
+4. Major blocker: vscode git API is not working on DevSpaces
+
+So, revamping our approach with that of creating child process that runs git commands and piping that output to an output channel
