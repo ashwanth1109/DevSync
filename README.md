@@ -284,40 +284,18 @@ Need a solution to have the extension, auto installed. Probably can do this,
 
 ## Notes:
 
-- Shared user, multiple people -> push their commits on the same branch
-- Store what was deployed earlier somewhere
-- START ==> SEND MESSAGE
-- END ==> SEND MESSAGE WITH COMMIT HASH
 - Interactive prompt in case of manual override requirement
 - `Better safe than sorry` principle
 - Anecdote about my pattern of usage
 - Auto deploy makes it easier on a newbee
-- How to auto run extension on launch?
 - Offloading the thought process (SCRATCH.md) => Monkey coding
 - Configurable tooling, not smart
 - Auto create branch from github? Or CLI tool to run create
 - Auto capture and write command outputs somewhere
-- Can we get main terminal and close processes or switch terminal etc.?
 - Update feasibility study failure point
 
 ## Brainstorming
 
-Auto download from S3 bucket and setup extension
-
-Deploy:
-
-- package.json
-- Backend:
-- lambdas
-- graphql
-- sq
-  Frontend:
-- assets
-
-`deploy/*` =>
-`*.spec.ts` =>
-
 Each file can be matched only once
 Maintain order
-Identify if there's anyway to detect if destroy has to be run
 Commands will not be run multiple times
