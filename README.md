@@ -65,14 +65,16 @@ Example logic object:
 
 ```json
 {
-  "deploy/package.json": ["npm run deploy:install"],
   "lambda/package.json": ["npm run lambda:install"],
+  "graphql/schema.graphql": ["npm run graphql:codegen"],
   "frontend/package.json": ["npm run frontend:install"],
-  "graphql/*": ["npm run graphql:codegen"],
+  "deploy/package.json": ["npm run deploy:install"],
   "deploy/*": [
-    { "manualOverride": ["npm run destroy:backend"] },
-    "npm run deploy:backend",
-    "npm run data:seed"
+    "npm run deploy:install",
+    {
+      "manualOverride": ["npm run destroy:backend"]
+    },
+    "npm run deploy:backend"
   ],
   "backend/database/schema.sql": [
     {
@@ -88,11 +90,25 @@ Example logic object:
   ],
   "lambda/*": ["npm run deploy:backend"],
   "frontend/assets/*": ["npm run deploy:assets"],
-  "frontend/*": [{ "parallel": ["npm run frontend:start"] }],
-  "backend/**/*.spec.js": [{ "parallel": ["npm run backend:test"] }],
-  "frontend/**/*.spec.js": [{ "parallel": ["npm run frontend:test"] }]
+  "frontend/**/*.spec.ts": [
+    {
+      "parallel": ["npm run frontend:test"]
+    }
+  ],
+  "frontend/*": [
+    {
+      "parallel": ["npm run frontend:start"]
+    }
+  ],
+  "backend/**/*.spec.ts": [
+    {
+      "parallel": ["npm run backend:test"]
+    }
+  ]
 }
 ```
+
+Note that the order of these file pattern matchers is important to what is the logic of commands run.
 
 ![Workspace Settings](./assets/workspace-settings.png)
 
