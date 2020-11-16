@@ -293,6 +293,8 @@ Need a solution to have the extension, auto installed. Probably can do this,
 - Auto create branch from github? Or CLI tool to run create
 - Auto capture and write command outputs somewhere
 - Update feasibility study failure point
+- Start developing feature, while changes are deployed and run on DevSpaces
+- If some issue, then fix it on the cloud IDE itself, without having to stash changes anywhere
 
 ## Brainstorming
 
