@@ -112,25 +112,39 @@ export function activate(context: vscode.ExtensionContext) {
       // TODO: Remove the map part because this is because our actual code is inside demo folder
       // So that we can house both the extension and our demo test directory in same repo
       const diffArr = diff.trim().split("\n");
+      const matchedFiles: string[] = [];
 
       channel.appendLine(`Files changed: ${JSON.stringify(diffArr, null, 2)}`);
 
       // The commands to run in order
       const commandsToRun: any[] = [];
 
-      const parseCommands = (entry: any) => {
+      const parseCommands = (entry: any, matchingFile: string) => {
+        if (matchedFiles.includes(matchingFile)) return;
+
         const commands = (entry[1] as unknown) as any[];
+
+        // Add command to the run array
         commandsToRun.push(...commands);
+
+        // Save the matched file to prevent multiple matches from happening for the same file
+        // e.g. deploy/package.json will only match once for "deploy/package.json" and not for "deploy/*"
+        matchedFiles.push(matchingFile);
       };
 
       Object.entries(configuration.logic).forEach((entry) => {
+        // If file is already matched then dont run any more commands for the same file
+        channel.appendLine(`matchedFiles: ${JSON.stringify(matchedFiles)}`);
+
         // Simple file match
         if (!/\*/.test(entry[0])) {
           // No *, so it is a simple file
           const filePath = entry[0];
 
+          const matchingFile = diffArr.find((f) => f === filePath);
+
           // If one of the file path matches with diff array, parse and store commands
-          if (diffArr.includes(filePath)) parseCommands(entry);
+          if (matchingFile) parseCommands(entry, matchingFile);
         } else if (entry[0].includes("**/*")) {
           // Match file in any sub folder with specific extension
           // ^frontend\/(?:.*).spec\.js$
@@ -141,8 +155,10 @@ export function activate(context: vscode.ExtensionContext) {
               .replace("**/*", "(?:.*)")}`
           );
 
+          const matchingFile = diffArr.find((file) => pattern.test(file));
+
           // If one of the file path matches with diff array, parse and store commands
-          if (diffArr.some((file) => pattern.test(file))) parseCommands(entry);
+          if (matchingFile) parseCommands(entry, matchingFile);
         } else {
           // Match any file inside directory
           // ^deploy\/.*$
@@ -150,10 +166,10 @@ export function activate(context: vscode.ExtensionContext) {
             `^${entry[0].replace("/", "\\/").replace("*", ".*$")}`
           );
 
+          const matchingFile = diffArr.find((file) => pattern.test(file));
+
           // If one of the file path matches with diff array, parse and store commands
-          if (diffArr.some((file) => pattern.test(file))) {
-            parseCommands(entry);
-          }
+          if (matchingFile) parseCommands(entry, matchingFile);
         }
       });
 
@@ -242,6 +258,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   let stopDisposable = commands.registerCommand("devsync.stop", async () => {
     if (interval) {
+      runningPrevious = false;
       channel.appendLine("DevSync has stopped polling for changes");
       clearInterval(interval);
     }

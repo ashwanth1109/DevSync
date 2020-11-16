@@ -259,6 +259,16 @@ let stopDisposable = commands.registerCommand("devsync.stop", async () => {
 });
 ```
 
+### Milestone 9: One file in diff can only match with one pattern
+
+We store the matched file from diff in a `matchedFile` array. This way, we dont run different commands for the same matched file.
+
+An example of this is, say we have match patterns for `deploy/package.json` and `deploy/*`.
+We make changes to `deploy/package.json` (example, bump a package version), in such a case,
+we don't want really want to deploy because we bumped package version as a chore and we haven't made changes to any other file in the deploy folder.
+
+So, in this case, only `deploy:install` would be run instead of running the whole deploy sequence.
+
 ## Dev Guide:
 
 1. Run extension in VS Code by pushing `F5`
