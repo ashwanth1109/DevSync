@@ -274,28 +274,6 @@ Need a solution to have the extension, auto installed. Probably can do this,
 
 ## Notes:
 
-````
-
-"activationEvents": [
-"onStartupFinished"
-]
-
-```
-
-```
-
-"extensionDependencies": [
-"vscode.git"
-],
-
-````
-
-[Expose config to be set in user settings](https://code.visualstudio.com/api/references/contribution-points#contributes.configuration)
-
-[Packaging extension into VSIX](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#packaging-extensions)
-
-[VS CodeSpaces](https://github.com/MicrosoftDocs/vscodespaces)
-
 - Shared user, multiple people -> push their commits on the same branch
 - Store what was deployed earlier somewhere
 - START ==> SEND MESSAGE
