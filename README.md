@@ -6,7 +6,7 @@ The adoption of a good tool that makes significant improvements to a developers 
 
 As developers, we have strong opinions about languages, IDEs, terminals, themes, colors and all the bells and whistles that make us productive. DevSpaces approach to have VS code as the cloud IDE makes business sense, but can be a jarring experience for someone who works in other IDEs.
 
-Furthermore, the native performance of a local IDE is probably going to be better, and more reliable. DevSpaces needs a way to get developers to adopt DevSpaces while still relying on their local IDEs to write code. Over time, developers would be increasing the time they spend on the cloud IDE.
+Furthermore, the native performance of a local IDE is better, and more reliable. There are several other integrated features such as Intellisense, find usages, navigate to code etc. which are not available in the Theia IDE. DevSpaces needs a way to get developers to adopt DevSpaces while still relying on their local IDEs to write code. Over time, developers would be increasing the time they spend on the cloud IDE.
 
 This is where DevSync comes into the picture.
 
