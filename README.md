@@ -10,10 +10,6 @@ Furthermore, the native performance of a local IDE is probably going to be bette
 
 This is where DevSync comes into the picture.
 
-## Test Repo
-
-https://github.com/trilogy-group/devsync-test
-
 ## DevSync - How it works?
 
 ![DevSync - How it works?](./assets/how-it-works.png)
