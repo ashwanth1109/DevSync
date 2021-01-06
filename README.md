@@ -14,6 +14,13 @@ This is where DevSync comes into the picture.
 
 ![DevSync - How it works?](./assets/how-it-works.png)
 
+## Dev Guide:
+
+1. Run extension in VS Code by pushing `F5`
+2. Open command palette (Ctrl + Shift + P) and run the command "DevSync"
+
+To package extension: `vsce package`
+
 ## Milestone Map:
 
 ### Milestone 1: Pull and get the two commits to be compared
@@ -277,9 +284,3 @@ We store the matched file from diff in a `matchedFile` array. This way, we dont 
 An example of this is, say we have match patterns for `frontend/**/*.spec.ts` (npm run test) and `frontend/*` (npm run start).
 We make changes to `frontend/app/app.component.spec.ts`, in such a case, we don't want really want to run start because we on made changes to spec file, and we just want to run tests to check if they are passing.
 
-## Dev Guide:
-
-1. Run extension in VS Code by pushing `F5`
-2. Open command palette (Ctrl + Shift + P) and run the command "DevSync"
-
-To package extension: `vsce package`
